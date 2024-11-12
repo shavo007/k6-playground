@@ -1,0 +1,12 @@
+node_modules
+yarn-error.log
+dist
+target
+package-lock.json
+results
+k6-test
+dashboards
+grafana
+bpay
+assets
+yarn.lock
