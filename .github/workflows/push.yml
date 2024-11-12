@@ -1,0 +1,38 @@
+on: [push]
+
+jobs:
+  k6_transpile_bundle_test:
+    name: Transpile, bundle and run
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
+    services:
+      greetings:
+        image: shanelee007/greetings-api:latest
+        ports:
+          - 8090:8081
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: c-hive/gha-yarn-cache@v2.1.0
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: Transpile and bundle test script
+        run: |
+          yarn webpack
+
+      - name: Run local k6 test
+        uses: grafana/k6-action@v0.3.0
+        with:
+          filename: dist/test1.js
+
+      - name: Run greetings api smoke tests
+        run: |
+          curl https://github.com/k6io/k6/releases/download/v0.45.0/k6-v0.45.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+          BASE_URL=http://localhost:8090 ./k6 run - <dist/greetings.js
+        # uses: k6io/action@v0.2.0
+        # with:
+        #   filename: dist/greetings.js
