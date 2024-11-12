@@ -25,7 +25,7 @@ jobs:
           yarn webpack
 
       - name: Run local k6 test
-        uses: grafana/k6-action@v0.3.0
+        uses: grafana/k6-action@v0.3.1
         with:
           filename: dist/test1.js
 
